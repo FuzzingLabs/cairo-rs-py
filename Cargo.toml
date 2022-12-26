@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "cairo_rs_py"
-crate-type = ["cdylib"]
+crate-type = ["dylib"]
 
 [features]
 extension = ["pyo3/num-bigint", "pyo3/extension-module"]
