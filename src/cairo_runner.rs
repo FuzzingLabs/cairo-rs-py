@@ -18,7 +18,7 @@ use cairo_rs::{
             cairo_run_errors::CairoRunError, runner_errors::RunnerError, trace_errors::TraceError,
         },
         runners::cairo_runner::{CairoRunner, ExecutionResources},
-        security::verify_secure_runner,
+        security::verify_secure_runner, vm_core::VirtualMachine,
     },
 };
 use num_bigint::BigInt;
@@ -27,7 +27,7 @@ use pyo3::{
     prelude::*,
     types::PyIterator,
 };
-use std::{any::Any, borrow::BorrowMut, collections::HashMap, iter::zip, path::PathBuf, rc::Rc};
+use std::{any::Any, borrow::BorrowMut, collections::HashMap, iter::zip, path::PathBuf, rc::Rc, cell::RefCell};
 
 const MEMORY_GET_SEGMENT_USED_SIZE_MSG: &str = "Failed to segment used size";
 const FAILED_TO_GET_INITIAL_FP: &str = "Failed to get initial segment";
@@ -36,7 +36,7 @@ const FAILED_TO_GET_INITIAL_FP: &str = "Failed to get initial segment";
 #[pyo3(name = "CairoRunner")]
 pub struct PyCairoRunner {
     inner: CairoRunner,
-    pyvm: PyVM,
+    pub pyvm: PyVM,
     hint_processor: BuiltinHintProcessor,
     hint_locals: HashMap<String, PyObject>,
     struct_types: Rc<HashMap<String, HashMap<String, Member>>>,
@@ -79,6 +79,7 @@ impl PyCairoRunner {
             static_locals: None,
         })
     }
+
 
     #[pyo3(name = "cairo_run")]
     pub fn cairo_run_py(
