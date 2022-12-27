@@ -77,7 +77,7 @@ impl PyVM {
         }
     }
 
-    pub(crate) fn get_vm(&self) -> Rc<RefCell<VirtualMachine>> {
+    pub fn get_vm(&self) -> Rc<RefCell<VirtualMachine>> {
         Rc::clone(&self.vm)
     }
 
